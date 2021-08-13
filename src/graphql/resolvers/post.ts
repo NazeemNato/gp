@@ -37,7 +37,9 @@ export const post: Resolvers = {
           authorId: user.id,
         },
       });
-      return post;
+      return {
+        message:"done"
+      };
     },
   },
 };

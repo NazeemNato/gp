@@ -14,6 +14,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type Authentication = {
+  __typename?: 'Authentication';
+  accessToken: Scalars['String'];
+  refreshToken: Scalars['String'];
+};
+
 export type Comment = {
   __typename?: 'Comment';
   id?: Maybe<Scalars['Int']>;
@@ -21,23 +27,40 @@ export type Comment = {
   body: Scalars['String'];
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  createUser: User;
-  createPost?: Maybe<Post>;
-};
-
-
-export type MutationCreateUserArgs = {
+export type CreateUserInput = {
   fullName: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
 };
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createUser: Authentication;
+  loginUser: Authentication;
+  createPost: Response;
+  createComment: Response;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
+
+export type MutationLoginUserArgs = {
+  username: Scalars['String'];
+  password: Scalars['String'];
+};
+
 
 export type MutationCreatePostArgs = {
   title: Scalars['String'];
+  body: Scalars['String'];
+};
+
+
+export type MutationCreateCommentArgs = {
   body: Scalars['String'];
 };
 
@@ -55,6 +78,11 @@ export type Query = {
   hello?: Maybe<Scalars['String']>;
   users?: Maybe<Array<User>>;
   post?: Maybe<Array<Post>>;
+};
+
+export type Response = {
+  __typename?: 'Response';
+  message: Scalars['String'];
 };
 
 export type User = {
@@ -136,26 +164,38 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  Authentication: ResolverTypeWrapper<Authentication>;
+  String: ResolverTypeWrapper<Scalars['String']>;
   Comment: ResolverTypeWrapper<Comment>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
-  String: ResolverTypeWrapper<Scalars['String']>;
+  CreateUserInput: CreateUserInput;
   Mutation: ResolverTypeWrapper<{}>;
   Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<{}>;
+  Response: ResolverTypeWrapper<Response>;
   User: ResolverTypeWrapper<User>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 }>;
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  Authentication: Authentication;
+  String: Scalars['String'];
   Comment: Comment;
   Int: Scalars['Int'];
-  String: Scalars['String'];
+  CreateUserInput: CreateUserInput;
   Mutation: {};
   Post: Post;
   Query: {};
+  Response: Response;
   User: User;
   Boolean: Scalars['Boolean'];
+}>;
+
+export type AuthenticationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Authentication'] = ResolversParentTypes['Authentication']> = ResolversObject<{
+  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type CommentResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
@@ -166,8 +206,10 @@ export type CommentResolvers<ContextType = Context, ParentType extends Resolvers
 }>;
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'fullName' | 'email' | 'password' | 'username'>>;
-  createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'title' | 'body'>>;
+  createUser?: Resolver<ResolversTypes['Authentication'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  loginUser?: Resolver<ResolversTypes['Authentication'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'username' | 'password'>>;
+  createPost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'title' | 'body'>>;
+  createComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'body'>>;
 }>;
 
 export type PostResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
@@ -185,6 +227,11 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   post?: Resolver<Maybe<Array<ResolversTypes['Post']>>, ParentType, ContextType>;
 }>;
 
+export type ResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = ResolversObject<{
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   id?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   fullName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -195,10 +242,12 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
 }>;
 
 export type Resolvers<ContextType = Context> = ResolversObject<{
+  Authentication?: AuthenticationResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Response?: ResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 }>;
 

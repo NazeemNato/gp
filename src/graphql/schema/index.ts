@@ -29,13 +29,26 @@ export const schema = gql`
     post: [Post!]
   }
 
+  type Authentication {
+    accessToken: String!
+    refreshToken: String!
+  }
+
+  type Response {
+    message: String!
+  }
+
+  input CreateUserInput {
+    fullName: String!
+    email: String!
+    password: String!
+    username: String!
+  }
+
   type Mutation {
-    createUser(
-      fullName: String!
-      email: String!
-      password: String!
-      username: String!
-    ): User!
-    createPost(title: String!, body: String!): Post
+    createUser(input: CreateUserInput!): Authentication!
+    loginUser(username: String!, password: String!): Authentication!
+    createPost(title: String!, body: String!): Response!
+    createComment(body: String!): Response!
   }
 `;
