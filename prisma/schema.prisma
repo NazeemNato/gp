@@ -14,12 +14,25 @@ model Users {
   username String @unique
   password String
   post Post[]
+  comment Comment[]
+  createdAt DateTime @default(now())
 }
 
 model Post {
   id       Int    @id @default(autoincrement())
   author  Users @relation(fields: [authorId], references: [id])
   authorId Int
-  title String
   body String
+  comments Comment[]
+  createdAt DateTime @default(now())
+}
+
+model Comment {
+  id       Int    @id @default(autoincrement())
+  post Post @relation(fields: [postId], references: [id])
+  postId Int
+  user Users @relation(fields: [userId], references: [id])
+  userId Int
+  body String
+  createdAt DateTime @default(now())
 }

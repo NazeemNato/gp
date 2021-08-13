@@ -12,9 +12,15 @@ export const schema = gql`
   type Post {
     id: Int
     author: User
-    authorId: Int
     title: String
     body: String
+    comment: [Comment!]
+  }
+
+  type Comment {
+    id: Int
+    user: User
+    body: String!
   }
 
   type Query {
@@ -30,6 +36,6 @@ export const schema = gql`
       password: String!
       username: String!
     ): User!
-    createPost(username: String!, title: String!, body: String!): Post
+    createPost(title: String!, body: String!): Post
   }
 `;
