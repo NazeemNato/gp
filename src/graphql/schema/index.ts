@@ -14,7 +14,8 @@ export const schema = gql`
     author: User
     title: String
     body: String
-    comment: [Comment!]
+    commentCount: Int
+    comments: [Comment!]
   }
 
   type Comment {
@@ -27,6 +28,7 @@ export const schema = gql`
     hello: String
     users: [User!]
     post: [Post!]
+    comment(id: Int!): [Comment!]
   }
 
   type Authentication {
@@ -48,7 +50,7 @@ export const schema = gql`
   type Mutation {
     createUser(input: CreateUserInput!): Authentication!
     loginUser(username: String!, password: String!): Authentication!
-    createPost(title: String!, body: String!): Response!
-    createComment(body: String!): Response!
+    createPost(body: String!): Response!
+    createComment(postId: Int!, body: String!): Response!
   }
 `;

@@ -1,5 +1,10 @@
 import { PrismaClient } from "@prisma/client";
+
+type Response = {
+  userId: number;
+  username: string;
+}
 export interface Context {
-  token: string | string[];
+  authenticated: Response | null;
   prisma: PrismaClient;
 }

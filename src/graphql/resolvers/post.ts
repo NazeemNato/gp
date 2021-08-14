@@ -1,14 +1,22 @@
-import { ApolloError } from "apollo-server";
+import { ApolloError, ForbiddenError } from "apollo-server";
 import { Resolvers } from "../../generated/graphql";
 
 export const post: Resolvers = {
+  
   Query: {
     post: async (_, args, context) => {
-      const { prisma } = context;
+      const { prisma, authenticated } = context;
+      if (!authenticated) {
+        throw new ForbiddenError("You don't have permission to view");
+      }
       const post = await prisma.post.findMany({
         include: {
           author: true,
-          comments: true,
+          comments: {
+            include: {
+              user: true,
+            },
+          },
         },
       });
       return post;
@@ -16,14 +24,16 @@ export const post: Resolvers = {
   },
   Mutation: {
     createPost: async (_, args, context) => {
-      const { prisma, token } = context;
+      const { prisma, authenticated } = context;
 
-      console.log(token);
+      if (!authenticated) {
+        throw new ForbiddenError("You don't have permission to view");
+      }
 
       const { body } = args;
       const user = await prisma.users.findUnique({
         where: {
-          username: "nazeem",
+          username: authenticated?.username,
         },
       });
 
@@ -31,14 +41,14 @@ export const post: Resolvers = {
         throw new ApolloError("Invalid username");
       }
 
-      const post = await prisma.post.create({
+      await prisma.post.create({
         data: {
           body,
           authorId: user.id,
         },
       });
       return {
-        message:"done"
+        message: "Post created successfully",
       };
     },
   },

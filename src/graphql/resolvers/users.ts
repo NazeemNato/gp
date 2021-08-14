@@ -1,17 +1,24 @@
 import { Resolvers } from "../../generated/graphql";
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserInputError } from "apollo-server-errors";
+import { UserInputError, ForbiddenError } from "apollo-server-errors";
 
 export const user: Resolvers = {
   Query: {
     users: async (_, args, context) => {
-      const { prisma, token } = context;
-      console.log(token);
+      const { prisma, authenticated } = context;
+
+      if (!authenticated) {
+        throw new ForbiddenError("You don't have permission to view");
+      }
 
       const users = await prisma.users.findMany({
         include: {
-          post: true,
+          post: {
+            include: {
+              comments: true
+            }
+          },
         },
       });
       return users;
