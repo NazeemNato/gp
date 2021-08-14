@@ -1,11 +1,33 @@
-import jwt from "jsonwebtoken";
+import { Request } from "express";
+import jwt_decode from "jwt-decode";
 
-export const verify = (token: string) => {
-    let response;
+type Response = {
+  userId: number;
+  username: string;
+};
+
+export function verify(req: Request): Response | null {
+  let token;
+  let response: Response;
+
+  if (!req.headers.authentication) {
+    return null;
+  }
+
+  if (req.headers.authentication) {
+    token = req.headers.authentication.toString().split("Bearer ")[1];
+  } else if (req.headers.Authentication) {
+    token = req.headers.Authentication.toString().split("Bearer ")[1];
+  }
+
+  if (token) {
     try {
-        jwt.decode(token, )
-    }catch (_){
-        return null;
+      response = jwt_decode(token);
+      return response;
+    } catch (error) {
+      return null;
     }
-    return response;
+  }
+
+  return null;
 }

@@ -55,12 +55,12 @@ export type MutationLoginUserArgs = {
 
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String'];
   body: Scalars['String'];
 };
 
 
 export type MutationCreateCommentArgs = {
+  postId: Scalars['Int'];
   body: Scalars['String'];
 };
 
@@ -70,7 +70,8 @@ export type Post = {
   author?: Maybe<User>;
   title?: Maybe<Scalars['String']>;
   body?: Maybe<Scalars['String']>;
-  comment?: Maybe<Array<Comment>>;
+  commentCount?: Maybe<Scalars['Int']>;
+  comments?: Maybe<Array<Comment>>;
 };
 
 export type Query = {
@@ -78,6 +79,12 @@ export type Query = {
   hello?: Maybe<Scalars['String']>;
   users?: Maybe<Array<User>>;
   post?: Maybe<Array<Post>>;
+  comment?: Maybe<Array<Comment>>;
+};
+
+
+export type QueryCommentArgs = {
+  id: Scalars['Int'];
 };
 
 export type Response = {
@@ -208,8 +215,8 @@ export type CommentResolvers<ContextType = Context, ParentType extends Resolvers
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createUser?: Resolver<ResolversTypes['Authentication'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   loginUser?: Resolver<ResolversTypes['Authentication'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'username' | 'password'>>;
-  createPost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'title' | 'body'>>;
-  createComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'body'>>;
+  createPost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'body'>>;
+  createComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'postId' | 'body'>>;
 }>;
 
 export type PostResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
@@ -217,7 +224,8 @@ export type PostResolvers<ContextType = Context, ParentType extends ResolversPar
   author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   body?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  comment?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
+  commentCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  comments?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -225,6 +233,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
   post?: Resolver<Maybe<Array<ResolversTypes['Post']>>, ParentType, ContextType>;
+  comment?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType, RequireFields<QueryCommentArgs, 'id'>>;
 }>;
 
 export type ResponseResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Response'] = ResolversParentTypes['Response']> = ResolversObject<{

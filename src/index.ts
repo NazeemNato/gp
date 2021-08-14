@@ -5,6 +5,7 @@ import { schema } from "./graphql/schema";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import { Context } from "./graphql/context";
+import { verify } from "./utils/verify";
 
 dotenv.config();
 
@@ -14,9 +15,9 @@ const startServer = () => {
     resolvers,
     typeDefs: schema,
     context: ({ req }) : Context => {
-      const token = req.headers.authentication || "";
+      const authenticated = verify(req);
       return {
-        token,
+        authenticated,
         prisma
       };
     },
