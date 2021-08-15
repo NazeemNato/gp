@@ -40,6 +40,8 @@ export type Mutation = {
   loginUser: Authentication;
   createPost: Response;
   createComment: Response;
+  deletePost: Response;
+  deleteComment: Response;
 };
 
 
@@ -64,6 +66,16 @@ export type MutationCreateCommentArgs = {
   body: Scalars['String'];
 };
 
+
+export type MutationDeletePostArgs = {
+  id?: Maybe<Scalars['Int']>;
+};
+
+
+export type MutationDeleteCommentArgs = {
+  id?: Maybe<Scalars['Int']>;
+};
+
 export type Post = {
   __typename?: 'Post';
   id?: Maybe<Scalars['Int']>;
@@ -79,7 +91,13 @@ export type Query = {
   hello?: Maybe<Scalars['String']>;
   users?: Maybe<Array<User>>;
   post?: Maybe<Array<Post>>;
+  singlePost?: Maybe<Post>;
   comment?: Maybe<Array<Comment>>;
+};
+
+
+export type QuerySinglePostArgs = {
+  id: Scalars['Int'];
 };
 
 
@@ -217,6 +235,8 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   loginUser?: Resolver<ResolversTypes['Authentication'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'username' | 'password'>>;
   createPost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'body'>>;
   createComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'postId' | 'body'>>;
+  deletePost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, never>>;
+  deleteComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, never>>;
 }>;
 
 export type PostResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{
@@ -233,6 +253,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   hello?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>;
   post?: Resolver<Maybe<Array<ResolversTypes['Post']>>, ParentType, ContextType>;
+  singlePost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QuerySinglePostArgs, 'id'>>;
   comment?: Resolver<Maybe<Array<ResolversTypes['Comment']>>, ParentType, ContextType, RequireFields<QueryCommentArgs, 'id'>>;
 }>;
 

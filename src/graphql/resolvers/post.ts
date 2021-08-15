@@ -1,8 +1,7 @@
-import { ApolloError, ForbiddenError } from "apollo-server";
+import { ApolloError, ForbiddenError, UserInputError } from "apollo-server";
 import { Resolvers } from "../../generated/graphql";
 
 export const post: Resolvers = {
-  
   Query: {
     post: async (_, args, context) => {
       const { prisma, authenticated } = context;
@@ -19,6 +18,34 @@ export const post: Resolvers = {
           },
         },
       });
+      return post;
+    },
+    singlePost: (_, args, context) => {
+      const { prisma, authenticated } = context;
+      const { id } = args;
+
+      if (!authenticated) {
+        throw new ForbiddenError("You don't have permission to view");
+      }
+
+      if (!id) {
+        throw new UserInputError("Please input post id");
+      }
+
+      const post = prisma.post.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          author: true,
+          comments: true,
+        },
+      });
+
+      if (!post) {
+        throw new UserInputError("Invalid post id");
+      }
+
       return post;
     },
   },
