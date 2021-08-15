@@ -68,12 +68,12 @@ export type MutationCreateCommentArgs = {
 
 
 export type MutationDeletePostArgs = {
-  id?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
 };
 
 
 export type MutationDeleteCommentArgs = {
-  id?: Maybe<Scalars['Int']>;
+  id: Scalars['Int'];
 };
 
 export type Post = {
@@ -235,8 +235,8 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   loginUser?: Resolver<ResolversTypes['Authentication'], ParentType, ContextType, RequireFields<MutationLoginUserArgs, 'username' | 'password'>>;
   createPost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'body'>>;
   createComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'postId' | 'body'>>;
-  deletePost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, never>>;
-  deleteComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, never>>;
+  deletePost?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationDeletePostArgs, 'id'>>;
+  deleteComment?: Resolver<ResolversTypes['Response'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'id'>>;
 }>;
 
 export type PostResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = ResolversObject<{

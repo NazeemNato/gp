@@ -53,7 +53,7 @@ export const schema = gql`
     loginUser(username: String!, password: String!): Authentication!
     createPost(body: String!): Response!
     createComment(postId: Int!, body: String!): Response!
-    deletePost(id: Int): Response!
-    deleteComment(id: Int) : Response!
+    deletePost(id: Int!): Response!
+    deleteComment(id: Int!) : Response!
   }
 `;

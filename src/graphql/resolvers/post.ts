@@ -78,5 +78,44 @@ export const post: Resolvers = {
         message: "Post created successfully",
       };
     },
+    deletePost: async (_,args, context) => {
+
+      const {id} = args
+      const {prisma,authenticated} = context
+
+      if(!authenticated){
+        throw new ForbiddenError("You don't have  permission to delete")
+      }
+
+      const post = await prisma.post.findUnique({
+        where: {
+          id
+        },
+        include: {
+          author: true
+        }
+      });
+
+      if(!post){
+        throw new UserInputError("Invalid post id")
+      }
+
+      if(authenticated?.userId !== post.author.id){
+        throw new ForbiddenError("You cant delete")
+      }
+
+      await prisma.post.delete({
+        where: {
+          id
+        },
+        include: {
+          comments: true
+        }
+      });
+
+      return {
+        message: "Successfully deleted"
+      }
+    }
   },
 };
