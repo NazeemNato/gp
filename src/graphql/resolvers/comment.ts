@@ -89,5 +89,38 @@ export const comment: Resolvers = {
         message: "Comment added",
       };
     },
+    deleteComment: async (_, args, context) => {
+      const { id } = args;
+
+      const { prisma, authenticated } = context;
+
+      if (!authenticated) {
+        throw new ForbiddenError("You don't have permission to view");
+      }
+
+      const comment = await prisma.comment.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          user: true,
+        },
+      });
+
+      if(authenticated?.userId !== comment?.user.id){
+        throw new ForbiddenError("You can't delete")
+      }
+
+      await prisma.comment.delete({
+        where: {
+          id
+        }
+      });
+
+
+      return {
+        message: "Comment deleted successfully",
+      };
+    },
   },
 };
